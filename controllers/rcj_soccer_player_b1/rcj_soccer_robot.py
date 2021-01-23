@@ -15,7 +15,6 @@ class RCJSoccerRobot:
         self.name = self.robot.getName()                                #讀名字   ex:B1
         self.team = self.name[0]                                        #讀隊伍      B
         self.player_id = int(self.name[1])                              #讀號碼       1
-
         self.receiver = self.robot.getDevice("receiver")
         self.receiver.enable(TIME_STEP)
 
@@ -43,7 +42,7 @@ class RCJSoccerRobot:
         """
         # X, Z and rotation for each robot
         # plus X and Z for ball
-        struct_fmt = 'ddd' * 6 + 'dd'
+        struct_fmt = 'ddd' * N_ROBOTS + 'dd'
 
         unpacked = struct.unpack(struct_fmt, packet)            #解析全場資料
         data = {}
