@@ -43,7 +43,7 @@ class RCJSoccerRobot:
         """
         # X, Z and rotation for each robot
         # plus X and Z for ball
-        struct_fmt = 'ddd' * 6 + 'dd'
+        struct_fmt = 'ddd' * N_ROBOTS + 'dd'
 
         unpacked = struct.unpack(struct_fmt, packet)            #解析全場資料
         data = {}
@@ -79,7 +79,7 @@ class RCJSoccerRobot:
         """
         return self.receiver.getQueueLength() > 0
 
-    def get_angles(self, ball_pos: dict, robot_pos: dict) -> Tuple[float, float]:
+    def get_angles(self, ball_pos: dict, robot_pos: dict) -> Tuple[float, float, float]:
         """Get angles in degrees.
 
         Args:
@@ -94,11 +94,11 @@ class RCJSoccerRobot:
         """
         robot_angle: float = robot_pos['orientation']
 
+        y = ball_pos['y'] - robot_pos['y']
+        x = ball_pos['x'] - robot_pos['x']
         # Get the angle between the robot and the ball
-        angle = math.atan2(
-            ball_pos['y'] - robot_pos['y'],
-            ball_pos['x'] - robot_pos['x'],
-        )
+        angle = math.atan2(y,x)
+        distance = math.sqrt(x*x + y*y)
 
         if angle < 0:
             angle = 2 * math.pi + angle
@@ -115,7 +115,8 @@ class RCJSoccerRobot:
         if robot_ball_angle > 360:
             robot_ball_angle -= 360
 
-        return robot_ball_angle, robot_angle            #單位:deg
+        return robot_ball_angle, robot_angle, distance
+                                                        #單位:deg 以車頭為F
                                                         #robot_ball     robot_deg
                                                         #     F              F
                                                         #     0              0   
