@@ -1,5 +1,5 @@
 {
     "python.linting.pylintArgs": [
-        "--diable=E"
+        "--disable=E"
     ]
 }
