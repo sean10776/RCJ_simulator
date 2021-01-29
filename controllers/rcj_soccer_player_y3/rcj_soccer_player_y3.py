@@ -45,4 +45,4 @@ class MyRobot(rcj_soccer_robot.RCJSoccerRobot):
 
 
 my_robot = MyRobot()
-my_robot.run()
+#my_robot.run()

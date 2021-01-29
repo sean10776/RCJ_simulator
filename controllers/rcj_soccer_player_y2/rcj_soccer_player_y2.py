@@ -1,6 +1,6 @@
-# rcj_soccer_player controller - ROBOT Y2
+# rcj_soccer_player controller - ROBOT Y1
 
-###### REQUIRED in order to import files from Y1 controller
+# Feel free to import built-in libraries
 import sys
 from pathlib import Path
 sys.path.append(str(Path('.').absolute().parent))
@@ -15,6 +15,7 @@ import math
 
 class MyRobot(rcj_soccer_robot.RCJSoccerRobot):
     def run(self):
+        # woolong = False
         while self.robot.step(rcj_soccer_robot.TIME_STEP) != -1:
             if self.is_new_data():
                 data = self.get_new_data()
@@ -26,6 +27,9 @@ class MyRobot(rcj_soccer_robot.RCJSoccerRobot):
 
                 # Get angle between the robot and the ball
                 # and between the robot and the north
+
+                
+
                 ball_angle, robot_angle = self.get_angles(ball_pos, robot_pos)
 
                 # Compute the speed for motors
@@ -33,12 +37,24 @@ class MyRobot(rcj_soccer_robot.RCJSoccerRobot):
 
                 # If the robot has the ball right in front of it, go forward,
                 # rotate otherwise
-                if direction == 0:
+                x = ball_pos["x"] - robot_pos["x"]
+                y = ball_pos["y"] - robot_pos["y"]
+                a=math.sqrt(x*x+y*y)
+                if (a>0.2):
+                    if direction == 0:
+                        left_speed = -5
+                        right_speed = -5
+                    else:
+                        left_speed = direction * 4
+                        right_speed = direction * -4
+                elif (a<=0.2):
                     left_speed = -5
+                    right_speed = -2
+                elif (a<=0.2):
+                    left_speed = -2
                     right_speed = -5
-                else:
-                    left_speed = direction * 4
-                    right_speed = direction * -4
+
+                print("{:.2f}".format( ball_pos["x"])) 
 
                 # Set the speed to motors
                 self.left_motor.setVelocity(left_speed)
@@ -46,4 +62,4 @@ class MyRobot(rcj_soccer_robot.RCJSoccerRobot):
 
 
 my_robot = MyRobot()
-my_robot.run()
+#my_robot.run()

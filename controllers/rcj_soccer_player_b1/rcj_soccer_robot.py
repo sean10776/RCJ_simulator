@@ -15,7 +15,6 @@ class RCJSoccerRobot:
         self.name = self.robot.getName()                                #讀名字   ex:B1
         self.team = self.name[0]                                        #讀隊伍      B
         self.player_id = int(self.name[1])                              #讀號碼       1
-
         self.receiver = self.robot.getDevice("receiver")
         self.receiver.enable(TIME_STEP)
 
@@ -48,7 +47,7 @@ class RCJSoccerRobot:
         unpacked = struct.unpack(struct_fmt, packet)            #解析全場資料
         data = {}
         for i, r in enumerate(ROBOT_NAMES):                     #將資料寫成字典格式
-            data[r] = {                                         #機子名稱對應自身座標+角度
+            data[r] = {                                         #機子名稱對應自身座標+轉向(rad)
                 "x": unpacked[3 * i],
                 "y": unpacked[3 * i + 1],
                 "orientation": unpacked[3 * i + 2]
