@@ -11,16 +11,52 @@ from rcj_soccer_player_b1 import rcj_soccer_robot, utils
 
 # Feel free to import built-in libraries
 import math
+import matplotlib.pyplot as plt 
 
+<<<<<<< Updated upstream
 
 class MyRobot(rcj_soccer_robot.RCJSoccerRobot):
+=======
+class MyRobot(rcj_soccer_robot.RCJSoccerRobot):
+    def __init__(self):
+        super().__init__()
+        self.Goal = -10                         #目標球門角度
+        self.MAXSPEED = 5                       #系統限制最大速度(不可調)
+        self.Deflection = math.radians(30)      #繞球
+        self.limit_deg = 10
+
+    def move(self, deg, way):                         #deg:-180~180
+        if way < 0:
+            left_speed = right_speed = way * self.MAXSPEED
+            if deg > 0:
+                right_speed -= way * self.MAXSPEED * math.sin(math.radians(abs(deg)))
+            elif deg < 0:
+                left_speed -=  way * self.MAXSPEED * math.sin(math.radians(abs(deg)))
+        else:
+            left_speed = right_speed = way * self.MAXSPEED * 0.5
+            if deg > 0:
+                right_speed = way * self.MAXSPEED * math.cos(math.radians(abs(deg)))
+            elif deg < 0:
+                left_speed =  way * self.MAXSPEED * math.cos(math.radians(abs(deg)))
+        self.left_motor.setVelocity(left_speed)
+        self.right_motor.setVelocity(right_speed)
+        
+>>>>>>> Stashed changes
     def run(self):
+        way = -1
+
         while self.robot.step(rcj_soccer_robot.TIME_STEP) != -1:
             if self.is_new_data():
                 data = self.get_new_data()
 
                 # Get the position of our robot
                 robot_pos = data[self.name]
+<<<<<<< Updated upstream
+=======
+                if(self.Goal == -10):
+                    #print(math.degrees(robot_pos["orientation"]))
+                    self.Goal = robot_pos["orientation"]
+>>>>>>> Stashed changes
                 # Get the position of the ball
                 ball_pos = data['ball']
 
@@ -33,16 +69,28 @@ class MyRobot(rcj_soccer_robot.RCJSoccerRobot):
 
                 # If the robot has the ball right in front of it, go forward,
                 # rotate otherwise
+<<<<<<< Updated upstream
                 if direction == 0:
                     left_speed = -5
                     right_speed = -5
                 else:
                     left_speed = direction * 4
                     right_speed = direction * -4
+=======
+>>>>>>> Stashed changes
 
                 # Set the speed to motors
-                self.left_motor.setVelocity(left_speed)
-                self.right_motor.setVelocity(right_speed)
+                if ball_pos["x"] - robot_pos["x"] < 0:
+                    way = -1
+                else:
+                    way = 1
+                if ball_angle < 90 or ball_angle > 270:
+                    if ball_angle > 270:
+                        ball_angle -= 360
+                else:
+                    ball_angle -= 360
+
+                self.move(ball_angle, way)
 
 
 my_robot = MyRobot()
