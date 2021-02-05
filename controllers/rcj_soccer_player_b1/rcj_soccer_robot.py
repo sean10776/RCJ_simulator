@@ -107,7 +107,6 @@ class RCJSoccerRobot:
             robot_angle = 2 * math.pi + robot_angle
 
         robot_ball_angle = math.degrees(angle + robot_angle)
-        robot_angle = 360 - (math.degrees(robot_angle) + 90)
 
         # Axis Z is forward
         # TODO: change the robot's orientation so that X axis means forward

@@ -9,6 +9,11 @@ import utils
 
 
 class MyRobot(RCJSoccerRobot):
+    def __init__(self):
+        super().__init__()
+        self.__start = False
+        self.__ori = 0
+
     def run(self):
         while self.robot.step(TIME_STEP) != -1:
             if self.is_new_data():
@@ -18,6 +23,12 @@ class MyRobot(RCJSoccerRobot):
                 robot_pos = data[self.name]
                 # Get the position of the ball
                 ball_pos = data['ball']
+
+                # Get Initial agrument
+                if self.__start == False:
+                    self.__start = True
+                    self.__ori = int(robot_pos['orientation'])
+                    print(self.__ori)
 
                 # Get angle between the robot and the ball
                 # and between the robot and the north

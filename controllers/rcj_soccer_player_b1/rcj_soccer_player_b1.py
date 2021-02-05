@@ -21,9 +21,8 @@ class MyRobot(RCJSoccerRobot):
 
                 # Get angle between the robot and the ball
                 # and between the robot and the north
-                ball_angle, robot_angle = self.get_angles(ball_pos, robot_pos)
+                ball_angle, robot_angle, distance = self.get_angles(ball_pos, robot_pos)
 
-                print(ball_angle, robot_angle)
                 # Compute the speed for motors
                 direction = utils.get_direction(ball_angle)
                 # If the robot has the ball right in front of it, go forward,
@@ -41,4 +40,4 @@ class MyRobot(RCJSoccerRobot):
 
 
 my_robot = MyRobot()
-my_robot.run()
+# my_robot.run()
