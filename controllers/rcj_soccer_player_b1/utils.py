@@ -13,6 +13,14 @@ def get_direction(ball_angle: float) -> int:
     if ball_angle >= 345 or ball_angle <= 15:
         return 0
     return -1 if ball_angle < 180 else 1
+def body_frame(left_speed: float, right_speed: float) -> dict:
+    length = 0.75 + 0.01
+    omega = (right_speed - left_speed) / length
+    velocity = ( right_speed + left_speed) / 2
+    radius = 0
+    if omega != 0:
+        radius = velocity / omega
+    return {'velocity' : velocity, 'Omega': omega, 'Radius': radius}
 
 def map_pwr(pwr:float) -> float:
     if pwr > 10:
@@ -48,12 +56,24 @@ def Team_dis(data:dict, name:str) -> dict:
             Min_bot['Max']['name'] = i
             Min_bot['Max']['dis'] = dis
     return Min_bot
+
+
 def ploy(role:str, ori:int, position:dict, ball_angle:float) -> Tuple[float, float]:
     left_speed = right_speed = 0.0
+    angle = int(math.degrees(position['bot']['orientation']))
+    
     if role == "Attack":
-        pass
+        left_speed = right_speed = -10
+        if ball_angle < 5 or ball_angle > 355:
+            pass
+        elif ball_angle > 180:
+            left_speed  += math.cos(math.radians(ball_angle)) * 5
+        else:
+            right_speed += math.cos(math.radians(ball_angle)) * 5
+        
+        left_speed  = map_pwr(left_speed)
+        right_speed = map_pwr(right_speed)
     elif role == "Defense":#未完成
-        angle = int(math.degrees(position['bot']['orientation']))
         if position['bot']['x'] + 0.5 * int(ori) < 0: #回場防守的方向修正要修
             if int(ori) != int(position['bot']['orientation']):
                 left_speed  =  10

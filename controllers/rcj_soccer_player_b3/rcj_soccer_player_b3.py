@@ -20,6 +20,8 @@ class MyRobot(rcj_soccer_robot.RCJSoccerRobot):
         self.__forward = -1
         self.__ori = 0
         self.__role = ""
+        self.__stuck = False
+        self.__pre_pos = {}
 
     def run(self):
         while self.robot.step(rcj_soccer_robot.TIME_STEP) != -1:
@@ -32,10 +34,8 @@ class MyRobot(rcj_soccer_robot.RCJSoccerRobot):
                 ball_pos = data['ball']
 
                 if self.__start == False:
-                    self.__start = True
                     self.__ori = robot_pos['orientation']
                     self.__pre_pos = robot_pos
-                    print(self.__ori)
                 
                 # 隊友遠近判斷
                 Team_distance = utils.Team_dis(data, self.name)
@@ -51,7 +51,7 @@ class MyRobot(rcj_soccer_robot.RCJSoccerRobot):
                 ball_angle, robot_angle, distance = self.get_angles(ball_pos, robot_pos)
 
                 pos = {"bot":robot_pos, "ball":ball_pos}
-                left_speed, right_speed = utils.ploy("Defense", self.__ori, pos, ball_angle)
+                left_speed, right_speed = utils.ploy("Attack", self.__ori, pos, ball_angle)
                 
                 '''Defense
                 angle = int(math.degrees(robot_pos['orientation']))
@@ -88,6 +88,7 @@ class MyRobot(rcj_soccer_robot.RCJSoccerRobot):
                 # Set the speed to motors
                 self.left_motor.setVelocity(left_speed)
                 self.right_motor.setVelocity(right_speed)
+                self.__start = True
 
 
 
