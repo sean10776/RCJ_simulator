@@ -48,25 +48,25 @@ def Team_dis(data:dict, name:str) -> dict:
             Min_bot['Max']['name'] = i
             Min_bot['Max']['dis'] = dis
     return Min_bot
-def ploy(role:str, ori:int, robot_pos:dict, ball_angle:float) -> Tuple[float, float]:
+def ploy(role:str, ori:int, position:dict, ball_angle:float) -> Tuple[float, float]:
     left_speed = right_speed = 0.0
     if role == "Attack":
         pass
     elif role == "Defense":
-        angle = int(math.degrees(robot_pos['orientation']))
-        if robot_pos['x'] + 0.5 * int(ori) < 0:
-            if int(ori) != int(robot_pos['orientation']):
+        angle = int(math.degrees(position['bot']['orientation']))
+        if position['bot']['x'] + 0.5 * int(ori) < 0:
+            if int(ori) != int(position['bot']['orientation']):
                 left_speed  =  10
                 right_speed = -10
             else:
                 left_speed = right_speed = 10
-        elif ball_pos['x'] < 0 and abs(ball_pos['y'] - robot_pos['y']) > 0.3:
+        elif position['ball']['x'] < 0 and abs(position['ball']['y'] - position['bot']['y']) > 0.3:
             if ball_angle > 180:
                 ball_angle -= 360
             left_speed = ball_angle / 90 * -4
             right_speed = ball_angle / 90 * 4
-            left_speed  = utils.map_pwr(left_speed)
-            right_speed = utils.map_pwr(right_speed)
+            left_speed  = map_pwr(left_speed)
+            right_speed = map_pwr(right_speed)
         elif abs(angle) > 3 and abs(angle) < 180 - 3:
             if angle < 0:
                 left_speed  =  10 * abs(angle) / 45
@@ -74,12 +74,12 @@ def ploy(role:str, ori:int, robot_pos:dict, ball_angle:float) -> Tuple[float, fl
             else:
                 left_speed  = -10 * abs(180 - angle) / 45
                 right_speed =  10 * abs(180 - angle) / 45
-            left_speed  = utils.map_pwr(left_speed)
-            right_speed = utils.map_pwr(right_speed)
-        elif ball_pos['y'] != robot_pos['y']:
-            dy = (ball_pos['y'] - robot_pos['y'])
-            left_speed = right_speed = -10 * dy * 10 + utils.sign(dy) * -4
-            left_speed = right_speed = utils.map_pwr(right_speed)
+            left_speed  = map_pwr(left_speed)
+            right_speed = map_pwr(right_speed)
+        elif position['ball']['y'] != position['bot']['y']:
+            dy = (position['ball']['y'] - position['bot']['y'])
+            left_speed = right_speed = -10 * dy * 10 + sign(dy) * -4
+            left_speed = right_speed = map_pwr(right_speed)
     else:
         pass
     return left_speed, right_speed
