@@ -54,7 +54,7 @@ def ploy(role:str, ori:int, position:dict, ball_angle:float) -> Tuple[float, flo
         pass
     elif role == "Defense":#未完成
         angle = int(math.degrees(position['bot']['orientation']))
-        if position['bot']['x'] + 0.5 * int(ori) < 0:
+        if position['bot']['x'] + 0.5 * int(ori) < 0: #回場防守的方向修正要修
             if int(ori) != int(position['bot']['orientation']):
                 left_speed  =  10
                 right_speed = -10
