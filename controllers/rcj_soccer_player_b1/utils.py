@@ -13,6 +13,7 @@ def get_direction(ball_angle: float) -> int:
     if ball_angle >= 345 or ball_angle <= 15:
         return 0
     return -1 if ball_angle < 180 else 1
+
 def body_frame(left_speed: float, right_speed: float) -> dict:
     length = 0.75 + 0.01
     omega = (right_speed - left_speed) / length
@@ -22,11 +23,11 @@ def body_frame(left_speed: float, right_speed: float) -> dict:
         radius = velocity / omega
     return {'velocity' : velocity, 'Omega': omega, 'Radius': radius}
 
-def map_pwr(pwr:float) -> float:
+def map_pwr(pwr:float or bool) -> float:
     if pwr > 10:
         pwr = 10
     if pwr <= -10:
-        pwr = -9.9
+        pwr = -10
     return pwr
 
 def sign(value:float) -> int:
@@ -58,47 +59,61 @@ def Team_dis(data:dict, name:str) -> dict:
     return Min_bot
 
 
-def ploy(role:str, ori:int, position:dict, ball_angle:float) -> Tuple[float, float]:
+def ploy(role:str, ori:int, position:dict, ball:dict) -> Tuple[float, float]:
     left_speed = right_speed = 0.0
     angle = int(math.degrees(position['bot']['orientation']))
     
+    defense_fix_deg = 3
+
     if role == "Attack":
         left_speed = right_speed = -10
-        if ball_angle < 5 or ball_angle > 355:
+        if ball['angle'] < 10 or ball['angle'] > 350:
             pass
-        elif ball_angle > 180:
-            left_speed  += math.cos(math.radians(ball_angle)) * 5
+        elif ball['angle'] > 180 + 30:
+            left_speed  += abs(math.cos(math.radians(ball['angle']))) * 5
+        elif ball['angle'] < 180 - 30:
+            right_speed += abs(math.cos(math.radians(ball['angle']))) * 5
         else:
-            right_speed += math.cos(math.radians(ball_angle)) * 5
-        
+            left_speed  = right_speed = 10
+
+        if int(ori) != int(position['bot']['orientation']) and position['bot']['x'] > 0:
+            if abs(angle) < 90:
+                left_speed  = -10
+                right_speed = 10
+            else:
+                left_speed  = 10
+                right_speed = -10
+
+        print(left_speed, right_speed)
         left_speed  = map_pwr(left_speed)
         right_speed = map_pwr(right_speed)
     elif role == "Defense":#未完成
-        if position['bot']['x'] + 0.5 * int(ori) < 0: #回場防守的方向修正要修
+        if position['bot']['x'] + 0.6 * int(ori) < 0: #回場防守的方向修正要修
             if int(ori) != int(position['bot']['orientation']):
-                left_speed  =  10
-                right_speed = -10
+                pass
+                # left_speed  =  10
+                # right_speed = -10
             else:
                 left_speed = right_speed = 10
-        elif position['ball']['x'] < 0 and abs(position['ball']['y'] - position['bot']['y']) > 0.3:
-            if ball_angle > 180:
-                ball_angle -= 360
-            left_speed = ball_angle / 90 * -4
-            right_speed = ball_angle / 90 * 4
-            left_speed  = map_pwr(left_speed)
-            right_speed = map_pwr(right_speed)
-        elif abs(angle) > 3 and abs(angle) < 180 - 3:
+        # elif position['ball']['x'] < -0.3 and abs(position['ball']['y'] - position['bot']['y']) > 0.3:
+        #     if ball['angle'] > 180:
+        #         ball['angle'] -= 360
+        #     left_speed = ball['angle'] / 90 * -4
+        #     right_speed = ball['angle'] / 90 * 4
+        #     left_speed  = map_pwr(left_speed)
+        #     right_speed = map_pwr(right_speed)
+        elif abs(angle) > defense_fix_deg and abs(angle) < 180 - defense_fix_deg:
             if angle < 0:
-                left_speed  =  10 * abs(angle) / 45
-                right_speed = -10 * abs(angle) / 45
+                clockwise = 1
             else:
-                left_speed  = -10 * abs(180 - angle) / 45
-                right_speed =  10 * abs(180 - angle) / 45
+                clockwise = -1
+            left_speed  =  10 * clockwise * abs(math.sin(abs(180 - angle))) * 0.8
+            right_speed = -10 * clockwise * abs(math.sin(abs(180 - angle))) * 0.8
             left_speed  = map_pwr(left_speed)
             right_speed = map_pwr(right_speed)
         elif position['ball']['y'] != position['bot']['y']:
             dy = (position['ball']['y'] - position['bot']['y'])
-            left_speed = right_speed = -10 * dy * 10 + sign(dy) * -4
+            left_speed = right_speed = -10 * dy * 10 + sign(dy) * -4 #TODO 最低速 球越近越快
             left_speed = right_speed = map_pwr(right_speed)
     else:
         pass

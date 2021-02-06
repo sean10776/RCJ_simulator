@@ -21,6 +21,7 @@ class MyRobot(rcj_soccer_robot.RCJSoccerRobot):
         self.__ori = 0
         self.__role = ""
         self.__stuck = False
+        self.__stuck_counter = 0
         self.__pre_pos = {}
 
     def run(self):
@@ -46,49 +47,28 @@ class MyRobot(rcj_soccer_robot.RCJSoccerRobot):
                 else:
                     self.__role = "Wait"
 
+                if self.__pre_pos['x'] == robot_pos['x'] and self.__pre_pos['y'] == robot_pos['y']:
+                    self.__stuck_counter += 1
+                if self.__stuck_counter > 10:
+                    self.__stuck = not self.__stuck
+                    self.__stuck_counter = 0
+
                 # Get angle between the robot and the ball
                 # and between the robot and the north
                 ball_angle, robot_angle, distance = self.get_angles(ball_pos, robot_pos)
 
-                pos = {"bot":robot_pos, "ball":ball_pos}
-                left_speed, right_speed = utils.ploy("Attack", self.__ori, pos, ball_angle)
-                
-                '''Defense
-                angle = int(math.degrees(robot_pos['orientation']))
-                if robot_pos['x'] + 0.5 * int(self.__ori) < 0:
-                    if int(self.__ori) != int(robot_pos['orientation']):
-                        left_speed  =  10
-                        right_speed = -10
-                    else:
-                        left_speed = right_speed = 10
-                elif ball_pos['x'] < 0 and abs(ball_pos['y'] - robot_pos['y']) > 0.3:
-                    if ball_angle > 180:
-                        ball_angle -= 360
-                    left_speed = ball_angle / 90 * -4
-                    right_speed = ball_angle / 90 * 4
-                    left_speed  = utils.map_pwr(left_speed)
-                    right_speed = utils.map_pwr(right_speed)
-                elif abs(angle) > 3 and abs(angle) < 180 - 3:
-                    if angle < 0:
-                        left_speed  =  10 * abs(angle) / 45
-                        right_speed = -10 * abs(angle) / 45
-                    else:
-                        left_speed  = -10 * abs(180 - angle) / 45
-                        right_speed =  10 * abs(180 - angle) / 45
-                    left_speed  = utils.map_pwr(left_speed)
-                    right_speed = utils.map_pwr(right_speed)
-                elif ball_pos['y'] != robot_pos['y']:
-                    dy = (ball_pos['y'] - robot_pos['y'])
-                    left_speed = right_speed = -10 * dy * 10 + utils.sign(dy) * -4
-                    left_speed = right_speed = utils.map_pwr(right_speed)
-                else:
-                    left_speed = right_speed = 0
-                '''
+                pos  = {"bot":robot_pos, "ball":ball_pos}
+                ball = {"angle": ball_angle, "distance": distance}
+                left_speed, right_speed = utils.ploy("Attack", self.__ori, pos, ball)
+                if self.__stuck:
+                    left_speed  *= -1
+                    right_speed *= -1
 
                 # Set the speed to motors
                 self.left_motor.setVelocity(left_speed)
                 self.right_motor.setVelocity(right_speed)
                 self.__start = True
+                self.__pre_pos = robot_pos
 
 
 
