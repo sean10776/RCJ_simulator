@@ -60,15 +60,11 @@ class MyRobot(rcj_soccer_robot.RCJSoccerRobot):
                 pos  = {"bot":robot_pos, "ball":ball_pos}
                 ball = {"angle": ball_angle, "distance": distance}
                 left_speed, right_speed = utils.ploy("Attack", self.__ori, pos, ball)
-                if self.__stuck:
-                    left_speed  *= -1
-                    right_speed *= -1
 
                 # Set the speed to motors
                 self.left_motor.setVelocity(left_speed)
                 self.right_motor.setVelocity(right_speed)
                 self.__start = True
-                self.__pre_pos = robot_pos
 
 
 

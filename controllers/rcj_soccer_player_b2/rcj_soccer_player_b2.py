@@ -22,6 +22,7 @@ class MyRobot(rcj_soccer_robot.RCJSoccerRobot):
         self.__pre_pos = {}
         
     def run(self):
+        Max = 0
         while self.robot.step(rcj_soccer_robot.TIME_STEP) != -1:
             if self.is_new_data():
                 data = self.get_new_data()
@@ -48,9 +49,10 @@ class MyRobot(rcj_soccer_robot.RCJSoccerRobot):
                 # and between the robot and the north
                 ball_angle, robot_angle, distance = self.get_angles(ball_pos, robot_pos)
 
-                pos = {"bot":robot_pos, "ball":ball_pos}
-                left_speed, right_speed = utils.ploy("Defense", self.__ori, pos, ball_angle)
-
+                pos  = {"bot":robot_pos, "ball":ball_pos}
+                ball = {"angle": ball_angle, "distance": distance}
+                left_speed, right_speed = utils.ploy("Defense", self.__ori, pos, ball)
+                
                 # Set the speed to motors
                 self.left_motor.setVelocity(left_speed)
                 self.right_motor.setVelocity(right_speed)
