@@ -39,19 +39,13 @@ class MyRobot(rcj_soccer_robot.RCJSoccerRobot):
                     self.__pre_pos = robot_pos
                 
                 # 隊友遠近判斷
-                Team_distance = utils.Team_dis(data, self.name)
-                if Team_distance['Min']['name'] == self.name:
-                    self.__role = "Attack"
-                elif Team_distance['Max']['name'] == self.name:
-                    self.__role = "Defense"
-                else:
-                    self.__role = "Wait"
-
-                if self.__pre_pos['x'] == robot_pos['x'] and self.__pre_pos['y'] == robot_pos['y']:
-                    self.__stuck_counter += 1
-                if self.__stuck_counter > 10:
-                    self.__stuck = not self.__stuck
-                    self.__stuck_counter = 0
+                # Team_distance = utils.Team_dis(data, self.name)
+                # if Team_distance['Min']['name'] == self.name:
+                #     self.__role = "Attack"
+                # elif Team_distance['Max']['name'] in [self.name, self.name[0] + "1"]:
+                #     self.__role = ""
+                # else:
+                #     self.__role = ""
 
                 # Get angle between the robot and the ball
                 # and between the robot and the north

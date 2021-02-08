@@ -37,13 +37,13 @@ class MyRobot(rcj_soccer_robot.RCJSoccerRobot):
                     self.__pre_pos = robot_pos
                 
                 # 隊友遠近判斷
-                Team_distance = utils.Team_dis(data, self.name)
-                if Team_distance['Min']['name'] == self.name:
-                    self.__role = "Attack"
-                elif Team_distance['Max']['name'] == self.name:
-                    self.__role = "Defense"
-                else:
-                    self.__role = "Defense"
+                # Team_distance = utils.Team_dis(data, self.name)
+                # if Team_distance['Min']['name'] == self.name:
+                #     self.__role = Attack
+                # elif Team_distance['Max']['name'] in [self.name, self.name[0] + "1"]:
+                #     self.__role = ""
+                # else:
+                #     self.__role = ""
 
                 # Get angle between the robot and the ball
                 # and between the robot and the north
@@ -51,7 +51,7 @@ class MyRobot(rcj_soccer_robot.RCJSoccerRobot):
 
                 pos  = {"bot":robot_pos, "ball":ball_pos}
                 ball = {"angle": ball_angle, "distance": distance}
-                left_speed, right_speed = utils.ploy("Defense", self.__ori, pos, ball)
+                left_speed, right_speed = utils.ploy("Attack", self.__ori, pos, ball)
                 
                 # Set the speed to motors
                 self.left_motor.setVelocity(left_speed)

@@ -115,9 +115,7 @@ class RCJSoccerRobot:
         if robot_ball_angle > 360:
             robot_ball_angle -= 360
 
-        distance = math.sqrt((ball_pos['y'] - robot_pos['y'])**2 + (ball_pos['x'] - robot_pos['x'])**2)
-        return robot_ball_angle, robot_angle, distance  
-                                                        #單位:deg
+        return robot_ball_angle, robot_angle            #單位:deg
                                                         #robot_ball     robot_deg
                                                         #     F              F
                                                         #     0              0   
